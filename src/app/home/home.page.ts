@@ -15,6 +15,7 @@ import { RouterLink } from '@angular/router';
 import { Streak, StreaksService } from '../streaks.service';
 import { CommonModule } from '@angular/common';
 import { AlertController } from '@ionic/angular/standalone';
+import { IonCard, IonCardContent, IonSpinner } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -24,11 +25,11 @@ import { AlertController } from '@ionic/angular/standalone';
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonButtons, IonButton, IonFab, IonFabButton,
-    RouterLink,CommonModule, IonItem, IonLabel
+    RouterLink,CommonModule, IonItem, IonLabel,
+    IonCard, IonCardContent, IonSpinner
   ],
 })
 export class HomePage {
-  // “dnes” jako datum bez času (aby to nedělalo bordel kolem půlnoci)
   private readonly today = this.startOfDay(new Date());
   private selected = this.startOfDay(new Date());
 
@@ -92,6 +93,7 @@ export class HomePage {
 
   async ionViewWillEnter() {
     this.streaks = await this.streaksSvc.getAll();
+    await this.loadQuote();
   }
 
   currentDaysToday(s: Streak): number {
@@ -146,5 +148,31 @@ export class HomePage {
     });
 
     await alert.present();
+  }
+
+  quote: string | null = null;
+  quoteError: string | null = null;
+  isLoadingQuote = false;
+
+  async loadQuote(): Promise<void> {
+    this.isLoadingQuote = true;
+    this.quoteError = null;
+
+    try {
+      const res = await fetch('https://api.adviceslip.com/advice', {
+        cache: 'no-store',
+      });
+      const data = await res.json();
+      this.quote = data?.slip?.advice ?? null;
+
+      if (!this.quote) {
+        this.quoteError = 'Quote not available';
+      }
+    } catch (e) {
+      this.quoteError = 'Failed to load quote';
+      this.quote = null;
+    } finally {
+      this.isLoadingQuote = false;
+    }
   }
 }

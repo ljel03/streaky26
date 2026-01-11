@@ -22,6 +22,31 @@
   </ion-header>
 
   <div style="padding: 16px; width: 100%;">
+    <ion-card>
+      <ion-card-content>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <strong>Quote (REST API)</strong>
+          <ion-button size="small" fill="outline" (click)="loadQuote()" [disabled]="isLoadingQuote">
+            Refresh
+          </ion-button>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <ion-spinner *ngIf="isLoadingQuote"></ion-spinner>
+
+          <div *ngIf="!isLoadingQuote && quote" style="font-style: italic;">
+            💬 {{ quote }}
+          </div>
+
+          <div *ngIf="!isLoadingQuote && quoteError" style="opacity:.7;">
+            {{ quoteError }}
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div style="padding: 16px; width: 100%;">
     <strong>Streaks</strong>
 
     <div *ngIf="streaks.length === 0" style="opacity:.7; margin-top: 8px;">
