@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'cz.straky26.app',
-  appName: 'straky26',
+  appId: 'cz.streaky26.app',
+  appName: 'Streaky',
   webDir: 'www',
   bundledWebRuntime: false
 };
