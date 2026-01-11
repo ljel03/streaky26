@@ -28,9 +28,30 @@
       Zatím žádné streaky. Přidej první pomocí +.
     </div>
 
-    <div *ngFor="let s of streaks" style="margin-top: 10px;">
-      • {{ s.name }}
-    </div>
+    <ion-item *ngFor="let s of streaks" style="margin-top: 8px;">
+      <ion-label>
+        <div style="display:flex; justify-content:space-between; align-items:baseline;">
+          <strong>{{ s.name }}</strong>
+          <span style="opacity:.7; font-size: 12px;">max: {{ s.maxStreak }}</span>
+        </div>
+
+        <div style="margin-top:6px; opacity:.9;">
+          počátek: {{ formatYmdCz(s.startDateYmd) }}
+        </div>
+
+        <div style="margin-top:4px; opacity:.9;">
+          current (k {{ formattedDate }}): {{ currentDaysAtSelected(s) }} dní
+        </div>
+      </ion-label>
+
+      <ion-button slot="end" fill="outline" (click)="confirmReset(s)">
+        Reset
+      </ion-button>
+
+      <ion-button slot="end" color="danger" fill="outline" (click)="confirmDelete(s)">
+        Delete
+      </ion-button>
+    </ion-item>
   </div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

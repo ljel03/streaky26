@@ -8,10 +8,13 @@ import {
   IonButton,
   IonFab,
   IonFabButton,
+  IonItem,
+  IonLabel,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
 import { Streak, StreaksService } from '../streaks.service';
 import { CommonModule } from '@angular/common';
+import { AlertController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +24,7 @@ import { CommonModule } from '@angular/common';
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonButtons, IonButton, IonFab, IonFabButton,
-    RouterLink,CommonModule
+    RouterLink,CommonModule, IonItem, IonLabel
   ],
 })
 export class HomePage {
@@ -63,11 +66,85 @@ export class HomePage {
     return `${dayName} ${dd}.${mm}.${yyyy}`;
   }
 
+  private selectedYmd(): string {
+    return new Date(this.selected.getFullYear(), this.selected.getMonth(), this.selected.getDate())
+      .toISOString()
+      .slice(0, 10);
+  }
+
+  currentDaysAtSelected(s: any): number {
+    return this.streaksSvc.currentStreakDays(s, this.selectedYmd());
+  }
+
+  formatYmdCz(ymd: string): string {
+    const [y, m, d] = ymd.split('-').map(Number);
+    const dd = String(d).padStart(2, '0');
+    const mm = String(m).padStart(2, '0');
+    return `${dd}.${mm}.${y}`;
+  }
+
   streaks: Streak[] = [];
 
-  constructor(private streaksSvc: StreaksService) {}
+  constructor(
+    private streaksSvc: StreaksService,
+    private alertCtrl: AlertController
+  ) {}
 
   async ionViewWillEnter() {
     this.streaks = await this.streaksSvc.getAll();
+  }
+
+  currentDaysToday(s: Streak): number {
+    return this.streaksSvc.currentStreakDays(s);
+  }
+
+  async confirmReset(s: Streak) {
+    const curToday = this.currentDaysToday(s);
+
+    const alert = await this.alertCtrl.create({
+      header: 'Reset streak?',
+      message: `Reset "${s.name}" today? Current today: ${curToday}`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Reset',
+          role: 'destructive',
+          handler: async () => {
+            const today = new Date().toISOString().slice(0, 10);
+
+            const updated: Streak = {
+              ...s,
+              maxStreak: Math.max(s.maxStreak, curToday),
+              startDateYmd: today,
+            };
+
+            await this.streaksSvc.update(updated);
+            this.streaks = await this.streaksSvc.getAll();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async confirmDelete(s: Streak) {
+    const alert = await this.alertCtrl.create({
+      header: 'Delete streak?',
+      message: `Delete "${s.name}" permanently?`,
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Delete',
+          role: 'destructive',
+          handler: async () => {
+            await this.streaksSvc.remove(s.id);
+            this.streaks = await this.streaksSvc.getAll();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
