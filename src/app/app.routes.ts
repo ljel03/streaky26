@@ -10,4 +10,8 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'add-streak',
+    loadComponent: () => import('./add-streak/add-streak.page').then((m) => m.AddStreakPage),
+  },
 ];

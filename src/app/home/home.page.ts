@@ -6,14 +6,21 @@ import {
   IonContent,
   IonButtons,
   IonButton,
+  IonFab,
+  IonFabButton,
 } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton],
+  imports: [
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonButtons, IonButton, IonFab, IonFabButton,
+    RouterLink
+  ],
 })
 export class HomePage {
   // “dnes” jako datum bez času (aby to nedělalo bordel kolem půlnoci)
