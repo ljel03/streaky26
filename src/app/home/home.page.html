@@ -1,15 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="goBack()" [disabled]="!canGoBack()">
-        Back
-      </ion-button>
+      <ion-button (click)="goBack()" [disabled]="!canGoBack()">&lt;</ion-button>
     </ion-buttons>
 
     <ion-title>{{ formattedDate }}</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button (click)="goForward()">Next</ion-button>
+      <ion-button (click)="goForward()">&gt;</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -21,67 +19,78 @@
     </ion-toolbar>
   </ion-header>
 
-  <div style="padding: 16px; width: 100%;">
-    <ion-card>
-      <ion-card-content>
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-          <strong>Quote (REST API)</strong>
-          <ion-button size="small" fill="outline" (click)="loadQuote()" [disabled]="isLoadingQuote">
-            Refresh
-          </ion-button>
+  <!-- Quote -->
+  <ion-card>
+    <ion-card-content>
+      <div class="quote-row">
+        <div class="quote-text">
+          <ng-container *ngIf="quote; else quoteFallback">
+            “{{ quote }}”
+          </ng-container>
+
+          <ng-template #quoteFallback>
+            <span *ngIf="!isLoadingQuote && quoteError" class="muted">
+              {{ quoteError }}
+            </span>
+          </ng-template>
         </div>
 
-        <div style="margin-top: 10px;">
-          <ion-spinner *ngIf="isLoadingQuote"></ion-spinner>
+        <ion-button
+          fill="clear"
+          size="small"
+          class="refresh-btn"
+          (click)="loadQuote()"
+          [disabled]="isLoadingQuote"
+          aria-label="Obnovit citát"
+        >
+          ↻
+        </ion-button>
+      </div>
 
-          <div *ngIf="!isLoadingQuote && quote" style="font-style: italic;">
-            💬 {{ quote }}
-          </div>
+      <ion-spinner *ngIf="isLoadingQuote" style="margin-top: 6px;"></ion-spinner>
+    </ion-card-content>
+  </ion-card>
 
-          <div *ngIf="!isLoadingQuote && quoteError" style="opacity:.7;">
-            {{ quoteError }}
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </div>
-
-  <div style="padding: 16px; width: 100%;">
+  <!-- Streaks -->
+  <div class="section">
     <strong>Streaks</strong>
 
-    <div *ngIf="streaks.length === 0" style="opacity:.7; margin-top: 8px;">
+    <div *ngIf="streaks.length === 0" class="muted section-hint">
       Zatím žádné streaky. Přidej první pomocí +.
     </div>
 
-    <ion-item *ngFor="let s of streaks" style="margin-top: 8px;">
+    <ion-item *ngFor="let s of streaks" class="streak-item">
       <ion-label>
-        <div style="display:flex; justify-content:space-between; align-items:baseline;">
-          <strong>{{ s.name }}</strong>
-          <span style="opacity:.7; font-size: 12px;">max: {{ s.maxStreak }}</span>
+        <div class="streak-name">{{ s.name }}</div>
+
+        <div class="streak-line">
+          Streak: <strong>{{ currentDaysAtSelected(s) }}</strong> dní
         </div>
 
-        <div style="margin-top:6px; opacity:.9;">
-          počátek: {{ formatYmdCz(s.startDateYmd) }}
-        </div>
-
-        <div style="margin-top:4px; opacity:.9;">
-          current (k {{ formattedDate }}): {{ currentDaysAtSelected(s) }} dní
-        </div>
+        <div class="streak-subline">Rekord: {{ s.maxStreak }} dní</div>
       </ion-label>
 
-      <ion-button slot="end" fill="outline" (click)="confirmReset(s)">
-        Reset
+      <ion-button class="action-btn" slot="end" size="small" fill="outline" (click)="confirmReset(s)">
+        RESET
       </ion-button>
 
-      <ion-button slot="end" color="danger" fill="outline" (click)="confirmDelete(s)">
-        Delete
+      <ion-button
+        class="action-btn"
+        slot="end"
+        size="small"
+        fill="outline"
+        color="danger"
+        (click)="confirmDelete(s)"
+      >
+        SMAZAT
       </ion-button>
     </ion-item>
   </div>
 
+  <!-- FAB -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button [routerLink]="['/add-streak']">
-      +
+    <ion-fab-button [routerLink]="['/add-streak']" class="fab-btn">
+      <span class="fab-plus">+</span>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

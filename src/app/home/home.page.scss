@@ -25,3 +25,79 @@
 #container a {
   text-decoration: none;
 }
+
+
+/* quote řádek: text vlevo, tlačítko vpravo */
+.quote-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quote-text {
+  flex: 1;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.refresh-btn {
+  font-size: 26px;
+  font-weight: 600;
+  opacity: 0.85;
+  line-height: 1;
+  padding: 0 6px;
+}
+
+ion-button[fill='clear'] {
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+.quote-loading {
+  margin-top: 8px;
+}
+
+.section {
+  padding: 16px;
+  width: 100%;
+}
+
+.section-hint {
+  margin-top: 8px;
+}
+
+.streak-item {
+  margin-top: 8px;
+}
+
+.streak-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.streak-line {
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.streak-subline {
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+/* FAB: bílý plus */
+.fab-plus {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  line-height: 1;
+}
+
+.fab-btn {
+  color: white;
+}
