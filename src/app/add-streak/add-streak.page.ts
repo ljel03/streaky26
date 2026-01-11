@@ -1,18 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButtons,
-  IonBackButton,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonButton,
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButtons, IonBackButton,
+  IonItem, IonLabel, IonInput, IonButton,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { StreaksService } from '../streaks.service';
 
 @Component({
   selector: 'app-add-streak',
@@ -22,27 +18,23 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButtons,
-    IonBackButton,
-    IonItem,
-    IonLabel,
-    IonInput,
-    IonButton,
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonButtons, IonBackButton,
+    IonItem, IonLabel, IonInput, IonButton,
   ],
 })
 export class AddStreakPage {
   name = '';
 
-  save(): void {
+  constructor(private streaks: StreaksService, private router: Router) {}
+
+  async save(): Promise<void> {
     const trimmed = this.name.trim();
     if (!trimmed) return;
 
-    console.log('New streak name:', trimmed);
+    await this.streaks.add(trimmed);
 
     this.name = '';
+    await this.router.navigateByUrl('/');
   }
 }

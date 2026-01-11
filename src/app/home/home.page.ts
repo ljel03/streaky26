@@ -10,6 +10,8 @@ import {
   IonFabButton,
 } from '@ionic/angular/standalone';
 import { RouterLink } from '@angular/router';
+import { Streak, StreaksService } from '../streaks.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +21,7 @@ import { RouterLink } from '@angular/router';
   imports: [
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonButtons, IonButton, IonFab, IonFabButton,
-    RouterLink
+    RouterLink,CommonModule
   ],
 })
 export class HomePage {
@@ -59,5 +61,13 @@ export class HomePage {
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const yyyy = d.getFullYear();
     return `${dayName} ${dd}.${mm}.${yyyy}`;
+  }
+
+  streaks: Streak[] = [];
+
+  constructor(private streaksSvc: StreaksService) {}
+
+  async ionViewWillEnter() {
+    this.streaks = await this.streaksSvc.getAll();
   }
 }

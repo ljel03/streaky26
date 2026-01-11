@@ -21,14 +21,16 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>
-      Start with Ionic
-      <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components"
-        >UI Components</a
-      >
-    </p>
+  <div style="padding: 16px; width: 100%;">
+    <strong>Streaks</strong>
+
+    <div *ngIf="streaks.length === 0" style="opacity:.7; margin-top: 8px;">
+      Zatím žádné streaky. Přidej první pomocí +.
+    </div>
+
+    <div *ngFor="let s of streaks" style="margin-top: 10px;">
+      • {{ s.name }}
+    </div>
   </div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
